@@ -1,5 +1,7 @@
 # Cron Parser
-A cron expression parser
+A cron expression parser.
+
+You will need Go 1.14 or higher on your system to build and test.
 
 To build the application run:
 
