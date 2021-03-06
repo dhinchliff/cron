@@ -27,60 +27,28 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 }
 
 func (p *CronParser) parseMinute(expression string) ([]int, error) {
-	if expression == "*" {
-		return numRange(0, 59), nil
-	}
-
-	i, err := strconv.Atoi(expression)
-	if err != nil {
-		return nil, err
-	}
-
-	return []int{i}, nil
+	return p.parseExpression(expression, 0, 59)
 }
 
 func (p *CronParser) parseHour(expression string) ([]int, error) {
-	if expression == "*" {
-		return numRange(0, 23), nil
-	}
-
-	i, err := strconv.Atoi(expression)
-	if err != nil {
-		return nil, err
-	}
-
-	return []int{i}, nil
+	return p.parseExpression(expression, 0, 23)
 }
 
 func (p *CronParser) parseDayOfMonth(expression string) ([]int, error) {
-	if expression == "*" {
-		return numRange(1, 31), nil
-	}
-
-	i, err := strconv.Atoi(expression)
-	if err != nil {
-		return nil, err
-	}
-
-	return []int{i}, nil
+	return p.parseExpression(expression, 1, 31)
 }
 
 func (p *CronParser) parseMonth(expression string) ([]int, error) {
-	if expression == "*" {
-		return numRange(1, 12), nil
-	}
-
-	i, err := strconv.Atoi(expression)
-	if err != nil {
-		return nil, err
-	}
-
-	return []int{i}, nil
+	return p.parseExpression(expression, 1, 12)
 }
 
 func (p *CronParser) parseDayOfWeek(expression string) ([]int, error) {
+	return p.parseExpression(expression, 0, 6)
+}
+
+func (p *CronParser) parseExpression(expression string, min int, max int) ([]int, error) {
 	if expression == "*" {
-		return numRange(0, 6), nil
+		return numRange(min, max), nil
 	}
 
 	i, err := strconv.Atoi(expression)
