@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 )
 
@@ -9,7 +10,11 @@ func main() {
 	parser := CronParser{}
 	printer := CronPrinter{}
 
-	cron, _ := parser.Parse(args[0])
+	cron, err := parser.Parse(args[0])
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	printer.Print(os.Stdout, cron)
 }
