@@ -23,6 +23,17 @@ func TestCronParser_Parse(t *testing.T) {
 				Command:    "/usr/bin/find",
 			},
 		},
+		"all stars": {
+			expression: "* * * * * /usr/bin/find",
+			cron: &Cron{
+				Minute:     numRange(0, 59),
+				Hour:       numRange(0, 23),
+				DayOfMonth: numRange(1, 31),
+				Month:      numRange(1, 12),
+				DayOfWeek:  numRange(0, 6),
+				Command:    "/usr/bin/find",
+			},
+		},
 	}
 
 	for name, tc := range tests {
