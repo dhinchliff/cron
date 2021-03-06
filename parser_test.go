@@ -50,6 +50,10 @@ func TestCronParser_Parse(t *testing.T) {
 			expression: "1 2 3 4 /usr/bin/find",
 			err: fmt.Errorf("invalid expression [1 2 3 4 /usr/bin/find]"),
 		},
+		"expression with invalid numbers fields": {
+			expression: "1 2 3 4 a /usr/bin/find",
+			err: fmt.Errorf("invalid expression [1 2 3 4 a /usr/bin/find]"),
+		},
 	}
 
 	for name, tc := range tests {

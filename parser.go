@@ -11,16 +11,36 @@ type CronParser struct{}
 func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
 	parts := strings.Split(expression, " ")
+	invalidErr := fmt.Errorf("invalid expression [%s]", expression)
 
 	if len(parts) < 6 {
-		return nil, fmt.Errorf("invalid expression [%s]", expression)
+		return nil, invalidErr
 	}
 
-	minute, _ := p.parseMinute(parts[0])
-	hour, _ := p.parseHour(parts[1])
-	dayOfMonth, _ := p.parseDayOfMonth(parts[2])
-	month, _ := p.parseMonth(parts[3])
-	dayOfWeek, _ := p.parseDayOfWeek(parts[4])
+	minute, err := p.parseMinute(parts[0])
+	if err != nil {
+		return nil, invalidErr
+	}
+
+	hour, err := p.parseHour(parts[1])
+	if err != nil {
+		return nil, invalidErr
+	}
+
+	dayOfMonth, err := p.parseDayOfMonth(parts[2])
+	if err != nil {
+		return nil, invalidErr
+	}
+
+	month, err := p.parseMonth(parts[3])
+	if err != nil {
+		return nil, invalidErr
+	}
+
+	dayOfWeek, err := p.parseDayOfWeek(parts[4])
+	if err != nil {
+		return nil, invalidErr
+	}
 
 	return &Cron{
 		Minute:     minute,
