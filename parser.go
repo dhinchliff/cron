@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -77,7 +78,7 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	}
 
 	var out []int
-
+	outMap := make(map[int]struct{})
 	parts := strings.Split(expression, ",")
 
 	for _, part := range parts {
@@ -90,8 +91,16 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 			return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
 		}
 
-		out = append(out, i)
+		outMap[i]= struct{}{}
 	}
+
+	for key, _ := range outMap {
+		out = append(out, key)
+	}
+
+	sort.Slice(out, func(i, j int) bool {
+		return i < j
+	})
 
 	return out, nil
 }

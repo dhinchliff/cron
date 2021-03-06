@@ -46,6 +46,17 @@ func TestCronParser_Parse(t *testing.T) {
 				Command:    "/usr/bin/find",
 			},
 		},
+		"list with duplicates": {
+			expression: "1 1,2,1 4 6 3 /usr/bin/find",
+			cron: &Cron{
+				Minute:     []int{1},
+				Hour:       []int{1,2},
+				DayOfMonth: []int{4},
+				Month:      []int{6},
+				DayOfWeek:  []int{3},
+				Command:    "/usr/bin/find",
+			},
+		},
 		"expression with extra whitespace on ends": {
 			expression: " 1 2 3 4 5 /usr/bin/find ",
 			cron: &Cron{
