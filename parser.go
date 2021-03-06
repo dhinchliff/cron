@@ -13,7 +13,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 	parts := strings.Split(expression, " ")
 	invalidErr := fmt.Errorf("invalid expression [%s]", expression)
 
-	if len(parts) < 6 {
+	if len(parts) != 6 {
 		return nil, invalidErr
 	}
 
