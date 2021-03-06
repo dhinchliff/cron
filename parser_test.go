@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,6 +45,10 @@ func TestCronParser_Parse(t *testing.T) {
 				DayOfWeek:  []int{5},
 				Command:    "/usr/bin/find",
 			},
+		},
+		"expression with missing fields": {
+			expression: "1 2 3 4 /usr/bin/find",
+			err: fmt.Errorf("invalid expression [1 2 3 4 /usr/bin/find]"),
 		},
 	}
 

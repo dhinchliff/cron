@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -10,6 +11,10 @@ type CronParser struct{}
 func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
 	parts := strings.Split(expression, " ")
+
+	if len(parts) < 6 {
+		return nil, fmt.Errorf("invalid expression [%s]", expression)
+	}
 
 	minute, _ := p.parseMinute(parts[0])
 	hour, _ := p.parseHour(parts[1])
