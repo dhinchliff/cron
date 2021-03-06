@@ -68,6 +68,17 @@ func TestCronParser_Parse(t *testing.T) {
 				Command:    "/usr/bin/find",
 			},
 		},
+		"expression with command with spaces": {
+			expression: "1 2 3 4 5 /usr/bin/find file",
+			cron: &Cron{
+				Minute:     []int{1},
+				Hour:       []int{2},
+				DayOfMonth: []int{3},
+				Month:      []int{4},
+				DayOfWeek:  []int{5},
+				Command:    "/usr/bin/find file",
+			},
+		},
 		"expression with value out of range": {
 			expression: "1 2 3 4 100 /usr/bin/find",
 			err: fmt.Errorf("unexpected value 100, expected value between 0 and 6"),
@@ -75,10 +86,6 @@ func TestCronParser_Parse(t *testing.T) {
 		"expression with missing fields": {
 			expression: "1 2 3 4 /usr/bin/find",
 			err: fmt.Errorf("invalid expression [1 2 3 4 /usr/bin/find]"),
-		},
-		"expression with too many fields": {
-			expression: "1 2 3 4 5 6 /usr/bin/find",
-			err: fmt.Errorf("invalid expression [1 2 3 4 5 6 /usr/bin/find]"),
 		},
 		"expression with invalid numbers fields": {
 			expression: "1 2 3 4 a /usr/bin/find",

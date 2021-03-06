@@ -13,7 +13,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
 	parts := strings.Split(expression, " ")
 
-	if len(parts) != 6 {
+	if len(parts) < 6 {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
@@ -48,7 +48,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		DayOfMonth: dayOfMonth,
 		Month:      month,
 		DayOfWeek:  dayOfWeek,
-		Command:    parts[5],
+		Command:    strings.Join(parts[5:len(parts)], " "),
 	}, nil
 }
 
