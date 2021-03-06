@@ -19,27 +19,27 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 
 	minute, err := p.parseMinute(parts[0])
 	if err != nil {
-		return nil, invalidErr
+		return nil, err
 	}
 
 	hour, err := p.parseHour(parts[1])
 	if err != nil {
-		return nil, invalidErr
+		return nil, err
 	}
 
 	dayOfMonth, err := p.parseDayOfMonth(parts[2])
 	if err != nil {
-		return nil, invalidErr
+		return nil, err
 	}
 
 	month, err := p.parseMonth(parts[3])
 	if err != nil {
-		return nil, invalidErr
+		return nil, err
 	}
 
 	dayOfWeek, err := p.parseDayOfWeek(parts[4])
 	if err != nil {
-		return nil, invalidErr
+		return nil, err
 	}
 
 	return &Cron{
@@ -79,7 +79,11 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 
 	i, err := strconv.Atoi(expression)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid value %s, expected number", expression)
+	}
+
+	if i < min || i > max {
+		return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
 	}
 
 	return []int{i}, nil

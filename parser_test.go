@@ -46,6 +46,10 @@ func TestCronParser_Parse(t *testing.T) {
 				Command:    "/usr/bin/find",
 			},
 		},
+		"expression with value out of range": {
+			expression: "1 2 3 4 100 /usr/bin/find",
+			err: fmt.Errorf("unexpected value 100, expected value between 0 and 6"),
+		},
 		"expression with missing fields": {
 			expression: "1 2 3 4 /usr/bin/find",
 			err: fmt.Errorf("invalid expression [1 2 3 4 /usr/bin/find]"),
@@ -56,7 +60,7 @@ func TestCronParser_Parse(t *testing.T) {
 		},
 		"expression with invalid numbers fields": {
 			expression: "1 2 3 4 a /usr/bin/find",
-			err: fmt.Errorf("invalid expression [1 2 3 4 a /usr/bin/find]"),
+			err: fmt.Errorf("invalid value a, expected number"),
 		},
 	}
 
