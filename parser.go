@@ -76,14 +76,22 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		return numRange(min, max), nil
 	}
 
-	i, err := strconv.Atoi(expression)
-	if err != nil {
-		return nil, fmt.Errorf("invalid value %s, expected number", expression)
+	var out []int
+
+	parts := strings.Split(expression, ",")
+
+	for _, part := range parts {
+		i, err := strconv.Atoi(part)
+		if err != nil {
+			return nil, fmt.Errorf("invalid value %s, expected number", part)
+		}
+
+		if i < min || i > max {
+			return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
+		}
+
+		out = append(out, i)
 	}
 
-	if i < min || i > max {
-		return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
-	}
-
-	return []int{i}, nil
+	return out, nil
 }
