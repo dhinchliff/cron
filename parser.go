@@ -8,6 +8,7 @@ import (
 type CronParser struct{}
 
 func (p *CronParser) Parse(expression string) (*Cron, error) {
+	expression = strings.TrimSpace(expression)
 	parts := strings.Split(expression, " ")
 
 	minute, _ := p.parseMinute(parts[0])
