@@ -11,10 +11,9 @@ type CronParser struct{}
 func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
 	parts := strings.Split(expression, " ")
-	invalidErr := fmt.Errorf("invalid expression [%s]", expression)
 
 	if len(parts) != 6 {
-		return nil, invalidErr
+		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
 	minute, err := p.parseMinute(parts[0])
