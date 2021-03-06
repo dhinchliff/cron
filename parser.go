@@ -94,12 +94,12 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		outMap[i]= struct{}{}
 	}
 
-	for key, _ := range outMap {
+	for key := range outMap {
 		out = append(out, key)
 	}
 
 	sort.Slice(out, func(i, j int) bool {
-		return i < j
+		return out[i] < out[j]
 	})
 
 	return out, nil
