@@ -13,13 +13,13 @@ func TestCronParser_Parse(t *testing.T) {
 		err        error
 	}{
 		"basic expression": {
-			expression: "1 1 1 1 1 /usr/bin/find",
+			expression: "1 2 3 4 5 /usr/bin/find",
 			cron: &Cron{
 				Minute:     []int{1},
-				Hour:       []int{1},
-				DayOfMonth: []int{1},
-				Month:      []int{1},
-				DayOfWeek:  []int{1},
+				Hour:       []int{2},
+				DayOfMonth: []int{3},
+				Month:      []int{4},
+				DayOfWeek:  []int{5},
 				Command:    "/usr/bin/find",
 			},
 		},
