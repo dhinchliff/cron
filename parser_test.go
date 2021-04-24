@@ -174,6 +174,18 @@ func TestCronParser_parseExpression(t *testing.T) {
 			max:        5,
 			err:        fmt.Errorf("unexpected value 0, expected value between 1 and 5"),
 		},
+		"steps with invalid start number": {
+			expression: "a/2",
+			min:        0,
+			max:        60,
+			err:        fmt.Errorf("invalid value a, expected number"),
+		},
+		"steps with invalid increment number": {
+			expression: "1/x",
+			min:        1,
+			max:        5,
+			err:        fmt.Errorf("invalid value x, expected number"),
+		},
 		"range wraps valid range": {
 			expression: "0-60",
 			min:        1,
