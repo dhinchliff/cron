@@ -62,28 +62,23 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	parts := strings.Split(expression, ",")
 
 	for _, part := range parts {
-		rangeParts := strings.Split(part, "-")
-
-		if len(rangeParts) == 2 {
+		if rangeParts := strings.Split(part, "-"); len(rangeParts) == 2 {
 			err := p.getRange(rangeParts[0], rangeParts[1], min, max, outMap)
 			if err != nil {
 				return nil, err
 			}
-		} else {
-			stepParts := strings.Split(part, "/")
-			if len(stepParts) == 2 {
-				err := p.getSteps(stepParts[0], stepParts[1], min, max, outMap)
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				i, err := p.parseIntInRange(part, min, max)
-				if err != nil {
-					return nil, err
-				}
-
-				outMap[i] = struct{}{}
+		} else if stepParts := strings.Split(part, "/"); len(stepParts) == 2 {
+			err := p.getSteps(stepParts[0], stepParts[1], min, max, outMap)
+			if err != nil {
+				return nil, err
 			}
+		} else {
+			i, err := p.parseIntInRange(part, min, max)
+			if err != nil {
+				return nil, err
+			}
+
+			outMap[i] = struct{}{}
 		}
 	}
 
