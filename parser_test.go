@@ -156,6 +156,12 @@ func TestCronParser_parseField(t *testing.T) {
 		out        []int
 		err        error
 	}{
+		"steps with * as start": {
+			expression: "*/5",
+			min:        0,
+			max:        59,
+			out:        []int{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55},
+		},
 		"steps with start on valid range max": {
 			expression: "60/2",
 			min:        0,
