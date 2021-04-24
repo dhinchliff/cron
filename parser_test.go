@@ -162,6 +162,18 @@ func TestCronParser_parseExpression(t *testing.T) {
 			max: 60,
 			out: []int{60},
 		},
+		"steps with start above range": {
+			expression: "61/2",
+			min: 0,
+			max: 60,
+			err: fmt.Errorf("unexpected value 61, expected value between 0 and 60"),
+		},
+		"steps with start below range": {
+			expression: "0/2",
+			min: 1,
+			max: 5,
+			err: fmt.Errorf("unexpected value 0, expected value between 1 and 5"),
+		},
 	}
 
 	for name, tc := range tests {
