@@ -65,26 +65,9 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		rangeParts := strings.Split(part, "-")
 
 		if len(rangeParts) == 2 {
-			start, err := p.parseIntInRange(rangeParts[0], min, max)
+			err := p.getRange(rangeParts[0], rangeParts[1], min, max, outMap)
 			if err != nil {
 				return nil, err
-			}
-			end, err := p.parseIntInRange(rangeParts[1], min, max)
-			if err != nil {
-				return nil, err
-			}
-
-			if start <= end {
-				for _, i := range numRange(start, end) {
-					outMap[i] = struct{}{}
-				}
-			} else {
-				for _, i := range numRange(min, end) {
-					outMap[i] = struct{}{}
-				}
-				for _, i := range numRange(start, max) {
-					outMap[i] = struct{}{}
-				}
 			}
 		} else {
 			stepParts := strings.Split(part, "/")
@@ -121,6 +104,32 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	})
 
 	return out, nil
+}
+
+func (p *CronParser) getRange(startString string, endString string, min int, max int, outMap map[int]struct{}) error {
+	start, err := p.parseIntInRange(startString, min, max)
+	if err != nil {
+		return err
+	}
+	end, err := p.parseIntInRange(endString, min, max)
+	if err != nil {
+		return err
+	}
+
+	if start <= end {
+		for _, i := range numRange(start, end) {
+			outMap[i] = struct{}{}
+		}
+	} else {
+		for _, i := range numRange(min, end) {
+			outMap[i] = struct{}{}
+		}
+		for _, i := range numRange(start, max) {
+			outMap[i] = struct{}{}
+		}
+	}
+
+	return nil
 }
 
 func (p *CronParser) parseIntInRange(number string, min, max int) (int, error) {
