@@ -17,27 +17,27 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
-	minute, err := p.parseExpression(parts[0], 0, 59)
+	minute, err := p.parseField(parts[0], 0, 59)
 	if err != nil {
 		return nil, err
 	}
 
-	hour, err := p.parseExpression(parts[1], 0, 23)
+	hour, err := p.parseField(parts[1], 0, 23)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfMonth, err := p.parseExpression(parts[2], 1, 31)
+	dayOfMonth, err := p.parseField(parts[2], 1, 31)
 	if err != nil {
 		return nil, err
 	}
 
-	month, err := p.parseExpression(parts[3], 1, 12)
+	month, err := p.parseField(parts[3], 1, 12)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfWeek, err := p.parseExpression(parts[4], 0, 6)
+	dayOfWeek, err := p.parseField(parts[4], 0, 6)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 	}, nil
 }
 
-func (p *CronParser) parseExpression(expression string, min int, max int) ([]int, error) {
+func (p *CronParser) parseField(expression string, min int, max int) ([]int, error) {
 	if expression == "*" {
 		return numRange(min, max), nil
 	}

@@ -221,7 +221,7 @@ func TestCronParser_parseExpression(t *testing.T) {
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
 			p := &CronParser{}
-			out, err := p.parseExpression(tc.expression, tc.min, tc.max)
+			out, err := p.parseField(tc.expression, tc.min, tc.max)
 
 			assert.Equal(t, tc.err, err)
 			assert.Equal(t, tc.out, out)
