@@ -147,3 +147,30 @@ func TestCronParser_Parse(t *testing.T) {
 		})
 	}
 }
+
+func TestCronParser_parseExpression(t *testing.T) {
+	tests := map[string]struct {
+		expression string
+		min 	   int
+		max 	   int
+		out        []int
+		err        error
+	}{
+		"steps with start on limit": {
+			expression: "60/2",
+			min: 0,
+			max: 60,
+			out: []int{60},
+		},
+	}
+
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			p := &CronParser{}
+			out, err := p.parseExpression(tc.expression, tc.min, tc.max)
+
+			assert.Equal(t, tc.err, err)
+			assert.Equal(t, tc.out, out)
+		})
+	}
+}
