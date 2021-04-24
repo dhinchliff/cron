@@ -65,13 +65,13 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		rangeParts := strings.Split(part, "-")
 
 		if len(rangeParts) == 2 {
-			start, err := strconv.Atoi(rangeParts[0])
+			start, err := p.parseInt(rangeParts[0])
 			if err != nil {
-				return nil, fmt.Errorf("invalid value %s, expected number", rangeParts[0])
+				return nil, err
 			}
-			end, err := strconv.Atoi(rangeParts[1])
+			end, err := p.parseInt(rangeParts[1])
 			if err != nil {
-				return nil, fmt.Errorf("invalid value %s, expected number", rangeParts[1])
+				return nil, err
 			}
 
 			if start < min || start > max {
@@ -97,13 +97,13 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		} else {
 			stepParts := strings.Split(part, "/")
 			if len(stepParts) == 2 {
-				i, err := strconv.Atoi(stepParts[0])
+				i, err := p.parseInt(stepParts[0])
 				if err != nil {
-					return nil, fmt.Errorf("invalid value %s, expected number", stepParts[0])
+					return nil, err
 				}
-				step, err := strconv.Atoi(stepParts[1])
+				step, err := p.parseInt(stepParts[1])
 				if err != nil {
-					return nil, fmt.Errorf("invalid value %s, expected number", stepParts[1])
+					return nil, err
 				}
 
 				if i < min || i > max {
@@ -114,9 +114,9 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 					outMap[i] = struct{}{}
 				}
 			} else {
-				i, err := strconv.Atoi(part)
+				i, err := p.parseInt(part)
 				if err != nil {
-					return nil, fmt.Errorf("invalid value %s, expected number", part)
+					return nil, err
 				}
 
 				if i < min || i > max {
@@ -137,4 +137,13 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	})
 
 	return out, nil
+}
+
+func (p *CronParser) parseInt(number string) (int, error) {
+	i, err := strconv.Atoi(number)
+	if err != nil {
+		return 0, fmt.Errorf("invalid value %s, expected number", number)
+	}
+
+	return i, nil
 }
