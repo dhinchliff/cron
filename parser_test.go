@@ -156,23 +156,41 @@ func TestCronParser_parseExpression(t *testing.T) {
 		out        []int
 		err        error
 	}{
-		"steps with start on limit": {
+		"steps with start on valid range max": {
 			expression: "60/2",
 			min: 0,
 			max: 60,
 			out: []int{60},
 		},
-		"steps with start above range": {
+		"steps with start above valid range": {
 			expression: "61/2",
 			min: 0,
 			max: 60,
 			err: fmt.Errorf("unexpected value 61, expected value between 0 and 60"),
 		},
-		"steps with start below range": {
+		"steps with start below valid range": {
 			expression: "0/2",
 			min: 1,
 			max: 5,
 			err: fmt.Errorf("unexpected value 0, expected value between 1 and 5"),
+		},
+		"range wraps valid range": {
+			expression: "0-60",
+			min: 1,
+			max: 5,
+			err: fmt.Errorf("unexpected value 0, expected value between 1 and 5"),
+		},
+		"range overlaps start of valid range": {
+			expression: "0-1",
+			min: 1,
+			max: 5,
+			err: fmt.Errorf("unexpected value 0, expected value between 1 and 5"),
+		},
+		"range overlaps end of valid range": {
+			expression: "5-60",
+			min: 1,
+			max: 5,
+			err: fmt.Errorf("unexpected value 60, expected value between 1 and 5"),
 		},
 	}
 
