@@ -162,6 +162,12 @@ func TestCronParser_parseField(t *testing.T) {
 			max:        59,
 			out:        []int{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55},
 		},
+		"not zero based steps with empty start": {
+			expression: "/2",
+			min:        1,
+			max:        12,
+			out:        []int{1, 3, 5, 7, 9, 11},
+		},
 		"steps with * as start": {
 			expression: "*/5",
 			min:        0,

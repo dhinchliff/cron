@@ -130,18 +130,18 @@ func (p *CronParser) getRange(startString string, endString string, min int, max
 }
 
 func (p *CronParser) getSteps(startString string, stepString string, min int, max int, outMap map[int]struct{}) error {
-	if startString == "*" || startString == "" {
-		startString = "0"
-	}
-
-	i, err := p.parseIntInRange(startString, min, max)
-	if err != nil {
-		return err
-	}
+	i := min
 
 	step, err := p.parseInt(stepString)
 	if err != nil {
 		return err
+	}
+
+	if startString != "*" && startString != "" {
+		i, err = p.parseIntInRange(startString, min, max)
+		if err != nil {
+			return err
+		}
 	}
 
 	for ; i <= max; i += step {
