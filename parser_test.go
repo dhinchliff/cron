@@ -148,7 +148,7 @@ func TestCronParser_Parse(t *testing.T) {
 	}
 }
 
-func TestCronParser_parseExpression(t *testing.T) {
+func TestCronParser_parseField(t *testing.T) {
 	tests := map[string]struct {
 		expression string
 		min        int
