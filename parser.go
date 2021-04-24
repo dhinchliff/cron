@@ -65,21 +65,13 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		rangeParts := strings.Split(part, "-")
 
 		if len(rangeParts) == 2 {
-			start, err := p.parseInt(rangeParts[0])
+			start, err := p.parseIntInRange(rangeParts[0], min, max)
 			if err != nil {
 				return nil, err
 			}
-			end, err := p.parseInt(rangeParts[1])
+			end, err := p.parseIntInRange(rangeParts[1], min, max)
 			if err != nil {
 				return nil, err
-			}
-
-			if start < min || start > max {
-				return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", start, min, max)
-			}
-
-			if end < min || end > max {
-				return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", end, min, max)
 			}
 
 			if start <= end {
@@ -97,7 +89,7 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 		} else {
 			stepParts := strings.Split(part, "/")
 			if len(stepParts) == 2 {
-				i, err := p.parseInt(stepParts[0])
+				i, err := p.parseIntInRange(stepParts[0], min, max)
 				if err != nil {
 					return nil, err
 				}
@@ -106,21 +98,13 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 					return nil, err
 				}
 
-				if i < min || i > max {
-					return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
-				}
-
 				for ; i <= max; i += step {
 					outMap[i] = struct{}{}
 				}
 			} else {
-				i, err := p.parseInt(part)
+				i, err := p.parseIntInRange(part, min, max)
 				if err != nil {
 					return nil, err
-				}
-
-				if i < min || i > max {
-					return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
 				}
 
 				outMap[i] = struct{}{}
@@ -137,6 +121,19 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	})
 
 	return out, nil
+}
+
+func (p *CronParser) parseIntInRange(number string, min, max int) (int, error) {
+	i, err := p.parseInt(number)
+	if err != nil {
+		return 0, err
+	}
+
+	if i < min || i > max {
+		return 0, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
+	}
+
+	return i, nil
 }
 
 func (p *CronParser) parseInt(number string) (int, error) {

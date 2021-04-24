@@ -211,7 +211,7 @@ func TestCronParser_parseExpression(t *testing.T) {
 			err:        fmt.Errorf("invalid value !, expected number"),
 		},
 		"range with invalid end number": {
-			expression: "0-!",
+			expression: "1-!",
 			min:        1,
 			max:        5,
 			err:        fmt.Errorf("invalid value !, expected number"),
