@@ -11,33 +11,33 @@ type CronParser struct{}
 
 func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
-	parts := strings.Split(expression, " ")
+	fields := strings.Split(expression, " ")
 
-	if len(parts) < 6 {
+	if len(fields) < 6 {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
-	minute, err := p.parseField(parts[0], 0, 59)
+	minute, err := p.parseField(fields[0], 0, 59)
 	if err != nil {
 		return nil, err
 	}
 
-	hour, err := p.parseField(parts[1], 0, 23)
+	hour, err := p.parseField(fields[1], 0, 23)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfMonth, err := p.parseField(parts[2], 1, 31)
+	dayOfMonth, err := p.parseField(fields[2], 1, 31)
 	if err != nil {
 		return nil, err
 	}
 
-	month, err := p.parseField(parts[3], 1, 12)
+	month, err := p.parseField(fields[3], 1, 12)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfWeek, err := p.parseField(parts[4], 0, 6)
+	dayOfWeek, err := p.parseField(fields[4], 0, 6)
 	if err != nil {
 		return nil, err
 	}
@@ -48,18 +48,18 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		DayOfMonth: dayOfMonth,
 		Month:      month,
 		DayOfWeek:  dayOfWeek,
-		Command:    strings.Join(parts[5:len(parts)], " "),
+		Command:    strings.Join(fields[5:len(fields)], " "),
 	}, nil
 }
 
-func (p *CronParser) parseField(expression string, min int, max int) ([]int, error) {
-	if expression == "*" {
+func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
+	if field == "*" {
 		return numRange(min, max), nil
 	}
 
 	var out []int
 	outMap := make(map[int]struct{})
-	parts := strings.Split(expression, ",")
+	parts := strings.Split(field, ",")
 
 	for _, part := range parts {
 		if rangeParts := strings.Split(part, "-"); len(rangeParts) == 2 {
