@@ -59,26 +59,12 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 
 	var out []int
 	outMap := make(map[int]struct{})
-	parts := strings.Split(field, ",")
+	expressions := strings.Split(field, ",")
 
-	for _, part := range parts {
-		if rangeParts := strings.Split(part, "-"); len(rangeParts) == 2 {
-			err := p.getRange(rangeParts[0], rangeParts[1], min, max, outMap)
-			if err != nil {
-				return nil, err
-			}
-		} else if stepParts := strings.Split(part, "/"); len(stepParts) == 2 {
-			err := p.getSteps(stepParts[0], stepParts[1], min, max, outMap)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			i, err := p.parseIntInRange(part, min, max)
-			if err != nil {
-				return nil, err
-			}
-
-			outMap[i] = struct{}{}
+	for _, expression := range expressions {
+		err := p.parseExpression(expression, min, max, outMap)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -91,6 +77,29 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 	})
 
 	return out, nil
+}
+
+func (p *CronParser) parseExpression(expression string, min int, max int, outMap map[int]struct{}) error {
+	if rangeParts := strings.Split(expression, "-"); len(rangeParts) == 2 {
+		err := p.getRange(rangeParts[0], rangeParts[1], min, max, outMap)
+		if err != nil {
+			return err
+		}
+	} else if stepParts := strings.Split(expression, "/"); len(stepParts) == 2 {
+		err := p.getSteps(stepParts[0], stepParts[1], min, max, outMap)
+		if err != nil {
+			return err
+		}
+	} else {
+		i, err := p.parseIntInRange(expression, min, max)
+		if err != nil {
+			return err
+		}
+
+		outMap[i] = struct{}{}
+	}
+
+	return nil
 }
 
 func (p *CronParser) getRange(startString string, endString string, min int, max int, outMap map[int]struct{}) error {
