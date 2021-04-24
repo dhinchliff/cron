@@ -17,27 +17,27 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
-	minute, err := p.parseMinute(parts[0])
+	minute, err := p.parseExpression(parts[0], 0, 59)
 	if err != nil {
 		return nil, err
 	}
 
-	hour, err := p.parseHour(parts[1])
+	hour, err := p.parseExpression(parts[1], 0, 23)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfMonth, err := p.parseDayOfMonth(parts[2])
+	dayOfMonth, err := p.parseExpression(parts[2], 1, 31)
 	if err != nil {
 		return nil, err
 	}
 
-	month, err := p.parseMonth(parts[3])
+	month, err := p.parseExpression(parts[3], 1, 12)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfWeek, err := p.parseDayOfWeek(parts[4])
+	dayOfWeek, err := p.parseExpression(parts[4], 0, 6)
 	if err != nil {
 		return nil, err
 	}
@@ -50,26 +50,6 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		DayOfWeek:  dayOfWeek,
 		Command:    strings.Join(parts[5:len(parts)], " "),
 	}, nil
-}
-
-func (p *CronParser) parseMinute(expression string) ([]int, error) {
-	return p.parseExpression(expression, 0, 59)
-}
-
-func (p *CronParser) parseHour(expression string) ([]int, error) {
-	return p.parseExpression(expression, 0, 23)
-}
-
-func (p *CronParser) parseDayOfMonth(expression string) ([]int, error) {
-	return p.parseExpression(expression, 1, 31)
-}
-
-func (p *CronParser) parseMonth(expression string) ([]int, error) {
-	return p.parseExpression(expression, 1, 12)
-}
-
-func (p *CronParser) parseDayOfWeek(expression string) ([]int, error) {
-	return p.parseExpression(expression, 0, 6)
 }
 
 func (p *CronParser) parseExpression(expression string, min int, max int) ([]int, error) {
