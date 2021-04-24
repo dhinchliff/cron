@@ -48,7 +48,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		DayOfMonth: dayOfMonth,
 		Month:      month,
 		DayOfWeek:  dayOfWeek,
-		Command:    strings.Join(fields[5:len(fields)], " "),
+		Command:    strings.Join(fields[5:], " "),
 	}, nil
 }
 
