@@ -82,16 +82,27 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 	parts := strings.Split(expression, ",")
 
 	for _, part := range parts {
-		i, err := strconv.Atoi(part)
-		if err != nil {
-			return nil, fmt.Errorf("invalid value %s, expected number", part)
-		}
+		rangeParts := strings.Split(part, "-")
 
-		if i < min || i > max {
-			return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
-		}
+		if len(rangeParts) == 2 {
+			start, _ := strconv.Atoi(rangeParts[0])
+			end, _ := strconv.Atoi(rangeParts[1])
 
-		outMap[i]= struct{}{}
+			for _, i := range numRange(start, end) {
+				outMap[i]= struct{}{}
+			}
+		} else {
+			i, err := strconv.Atoi(part)
+			if err != nil {
+				return nil, fmt.Errorf("invalid value %s, expected number", part)
+			}
+
+			if i < min || i > max {
+				return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
+			}
+
+			outMap[i]= struct{}{}
+		}
 	}
 
 	for key := range outMap {
