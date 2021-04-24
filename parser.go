@@ -88,9 +88,19 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 			start, _ := strconv.Atoi(rangeParts[0])
 			end, _ := strconv.Atoi(rangeParts[1])
 
-			for _, i := range numRange(start, end) {
-				outMap[i]= struct{}{}
+			if start <= end {
+				for _, i := range numRange(start, end) {
+					outMap[i]= struct{}{}
+				}
+			} else {
+				for _, i := range numRange(min, end) {
+					outMap[i]= struct{}{}
+				}
+				for _, i := range numRange(start, max) {
+					outMap[i]= struct{}{}
+				}
 			}
+
 		} else {
 			i, err := strconv.Atoi(part)
 			if err != nil {
