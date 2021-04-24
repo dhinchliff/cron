@@ -78,14 +78,14 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 
 			if start <= end {
 				for _, i := range numRange(start, end) {
-					outMap[i]= struct{}{}
+					outMap[i] = struct{}{}
 				}
 			} else {
 				for _, i := range numRange(min, end) {
-					outMap[i]= struct{}{}
+					outMap[i] = struct{}{}
 				}
 				for _, i := range numRange(start, max) {
-					outMap[i]= struct{}{}
+					outMap[i] = struct{}{}
 				}
 			}
 		} else {
@@ -98,7 +98,7 @@ func (p *CronParser) parseExpression(expression string, min int, max int) ([]int
 					return nil, fmt.Errorf("unexpected value %d, expected value between %d and %d", i, min, max)
 				}
 
-				for ; i<= max; i += step {
+				for ; i <= max; i += step {
 					outMap[i] = struct{}{}
 				}
 			} else {
