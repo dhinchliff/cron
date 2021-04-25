@@ -165,6 +165,10 @@ func (p *CronParser) parseIntInRange(number string, min, max int) (int, error) {
 }
 
 func (p *CronParser) parseInt(number string) (int, error) {
+	if strings.TrimSpace(number) == "" {
+		return 0, fmt.Errorf("empty value, expected number")
+	}
+
 	i, err := strconv.Atoi(number)
 	if err != nil {
 		return 0, fmt.Errorf("invalid value %s, expected number", number)

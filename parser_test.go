@@ -214,6 +214,12 @@ func TestCronParser_parseField(t *testing.T) {
 			max:        5,
 			err:        fmt.Errorf("invalid value x, expected number"),
 		},
+		"steps with empty step number": {
+			expression: "/",
+			min:        1,
+			max:        12,
+			err:        fmt.Errorf("empty value, expected number"),
+		},
 		"range wraps valid range": {
 			expression: "0-60",
 			min:        1,
@@ -243,6 +249,18 @@ func TestCronParser_parseField(t *testing.T) {
 			min:        1,
 			max:        5,
 			err:        fmt.Errorf("invalid value !, expected number"),
+		},
+		"range with empty start number": {
+			expression: "-60",
+			min:        1,
+			max:        5,
+			err:        fmt.Errorf("empty value, expected number"),
+		},
+		"range with empty end number": {
+			expression: "1-",
+			min:        1,
+			max:        5,
+			err:        fmt.Errorf("empty value, expected number"),
 		},
 	}
 
