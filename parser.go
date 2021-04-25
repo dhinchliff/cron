@@ -64,7 +64,7 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 	for _, expression := range expressions {
 		err := p.parseExpression(expression, min, max, outMap)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("invalid field %s: %s", field, err)
 		}
 	}
 
