@@ -62,6 +62,10 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 	expressions := strings.Split(field, ",")
 
 	for _, expression := range expressions {
+		if expression == "" {
+			return nil, fmt.Errorf("empty field, check for double spaces")
+		}
+
 		err := p.parseExpression(expression, min, max, outMap)
 		if err != nil {
 			return nil, fmt.Errorf("invalid field %s: %s", field, err)
@@ -88,6 +92,10 @@ func (p *CronParser) parseExpression(expression string, min int, max int, outMap
 
 	if len(rangeAndStep) > 2 {
 		return fmt.Errorf("too many slashes")
+	}
+
+	if len(startAndEnd) > 2 {
+		return fmt.Errorf("too many hyphens")
 	}
 
 	if len(rangeAndStep) == 2 {

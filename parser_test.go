@@ -166,6 +166,12 @@ func TestCronParser_parseField(t *testing.T) {
 		out        []int
 		err        error
 	}{
+		"empty expression": {
+			expression: "",
+			min:        0,
+			max:        59,
+			err:        fmt.Errorf("empty field, check for double spaces"),
+		},
 		"steps with empty start": {
 			expression: "/5",
 			min:        0,
@@ -285,6 +291,18 @@ func TestCronParser_parseField(t *testing.T) {
 			min:        1,
 			max:        5,
 			err:        fmt.Errorf("invalid field 1-: empty value, expected number"),
+		},
+		"range with too many slashes": {
+			expression: "1/2/3",
+			min:        1,
+			max:        5,
+			err:        fmt.Errorf("invalid field 1/2/3: too many slashes"),
+		},
+		"range with too many hyphens": {
+			expression: "1-2-3/3",
+			min:        1,
+			max:        5,
+			err:        fmt.Errorf("invalid field 1-2-3/3: too many hyphens"),
 		},
 	}
 
