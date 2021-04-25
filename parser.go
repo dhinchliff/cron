@@ -137,6 +137,10 @@ func (p *CronParser) getSteps(startString string, stepString string, min int, ma
 		return err
 	}
 
+	if step < 1 {
+		return fmt.Errorf("unexpected step %d, expected value greater than zero", step)
+	}
+
 	if startString != "*" && startString != "" {
 		i, err = p.parseIntInRange(startString, min, max)
 		if err != nil {
