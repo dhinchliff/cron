@@ -112,7 +112,7 @@ func parseExpression(expression string, min int, max int, outMap map[int]struct{
 			if err != nil {
 				return err
 			}
-		} else {
+		} else if len(rangeAndStep) == 1 {
 			end = start
 		}
 	}

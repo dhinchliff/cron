@@ -80,7 +80,7 @@ func TestCronParser_Parse(t *testing.T) {
 			},
 		},
 		"expression with steps": {
-			expression: "50-59/2 1 1 1 1 /usr/bin/find",
+			expression: "50/2 1 1 1 1 /usr/bin/find",
 			cron: &Cron{
 				Minute:     []int{50, 52, 54, 56, 58},
 				Hour:       []int{1},
@@ -91,7 +91,7 @@ func TestCronParser_Parse(t *testing.T) {
 			},
 		},
 		"expression with steps and ranges": {
-			expression: "3,5-9,50-59/2 1 1 1 1 /usr/bin/find",
+			expression: "3,5-9,50/2 1 1 1 1 /usr/bin/find",
 			cron: &Cron{
 				Minute:     []int{3, 5, 6, 7, 8, 9, 50, 52, 54, 56, 58},
 				Hour:       []int{1},
@@ -191,10 +191,10 @@ func TestCronParser_parseField(t *testing.T) {
 			out:        []int{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55},
 		},
 		"steps on single digit": {
-			expression: "60/2",
+			expression: "50/2",
 			min:        0,
-			max:        60,
-			out:        []int{60},
+			max:        59,
+			out:        []int{50, 52, 54, 56, 58},
 		},
 		"range with steps": {
 			expression: "20-35/2",
