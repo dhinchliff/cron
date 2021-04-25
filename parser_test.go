@@ -238,6 +238,12 @@ func TestCronParser_parseField(t *testing.T) {
 			max:        12,
 			err:        fmt.Errorf("invalid field 1/0: unexpected step 0, expected value greater than zero"),
 		},
+		"range with negative steps": {
+			expression: "20-35/-2",
+			min:        0,
+			max:        59,
+			err:        fmt.Errorf("invalid field 20-35/-2: unexpected step -2, expected value greater than zero"),
+		},
 		"range wraps valid range": {
 			expression: "0-60",
 			min:        1,
