@@ -17,27 +17,27 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 
-	minute, err := p.parseField(fields[0], 0, 59)
+	minute, err := parseField(fields[0], 0, 59)
 	if err != nil {
 		return nil, err
 	}
 
-	hour, err := p.parseField(fields[1], 0, 23)
+	hour, err := parseField(fields[1], 0, 23)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfMonth, err := p.parseField(fields[2], 1, 31)
+	dayOfMonth, err := parseField(fields[2], 1, 31)
 	if err != nil {
 		return nil, err
 	}
 
-	month, err := p.parseField(fields[3], 1, 12)
+	month, err := parseField(fields[3], 1, 12)
 	if err != nil {
 		return nil, err
 	}
 
-	dayOfWeek, err := p.parseField(fields[4], 0, 6)
+	dayOfWeek, err := parseField(fields[4], 0, 6)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 	}, nil
 }
 
-func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
+func parseField(field string, min int, max int) ([]int, error) {
 	var out []int
 	outMap := make(map[int]struct{})
 	expressions := strings.Split(field, ",")
@@ -62,7 +62,7 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 			return nil, fmt.Errorf("empty field, check for double spaces")
 		}
 
-		err := p.parseExpression(expression, min, max, outMap)
+		err := parseExpression(expression, min, max, outMap)
 		if err != nil {
 			return nil, fmt.Errorf("invalid field %s: %s", field, err)
 		}
@@ -79,7 +79,7 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 	return out, nil
 }
 
-func (p *CronParser) parseExpression(expression string, min int, max int, outMap map[int]struct{}) (err error) {
+func parseExpression(expression string, min int, max int, outMap map[int]struct{}) (err error) {
 	rangeAndStep := strings.Split(expression, "/")
 	startAndEnd := strings.Split(rangeAndStep[0], "-")
 	start := min
@@ -95,20 +95,20 @@ func (p *CronParser) parseExpression(expression string, min int, max int, outMap
 	}
 
 	if len(rangeAndStep) == 2 {
-		step, err = p.parseInt(rangeAndStep[1])
+		step, err = parseInt(rangeAndStep[1])
 		if err != nil {
 			return err
 		}
 	}
 
 	if rangeAndStep[0] != "*" && rangeAndStep[0] != "" {
-		start, err = p.parseIntInRange(startAndEnd[0], min, max)
+		start, err = parseIntInRange(startAndEnd[0], min, max)
 		if err != nil {
 			return err
 		}
 
 		if len(startAndEnd) == 2 {
-			end, err = p.parseIntInRange(startAndEnd[1], min, max)
+			end, err = parseIntInRange(startAndEnd[1], min, max)
 			if err != nil {
 				return err
 			}
@@ -117,7 +117,7 @@ func (p *CronParser) parseExpression(expression string, min int, max int, outMap
 		}
 	}
 
-	err = p.getRangeStep(start, end, step, min, max, outMap)
+	err = getRangeStep(start, end, step, min, max, outMap)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func (p *CronParser) parseExpression(expression string, min int, max int, outMap
 	return nil
 }
 
-func (p *CronParser) getRangeStep(start int, end int, step int, min int, max int, outMap map[int]struct{}) error {
+func getRangeStep(start int, end int, step int, min int, max int, outMap map[int]struct{}) error {
 	if step < 1 {
 		return fmt.Errorf("unexpected step %d, expected value greater than zero", step)
 	}
@@ -147,8 +147,8 @@ func (p *CronParser) getRangeStep(start int, end int, step int, min int, max int
 	return nil
 }
 
-func (p *CronParser) parseIntInRange(number string, min, max int) (int, error) {
-	i, err := p.parseInt(number)
+func parseIntInRange(number string, min, max int) (int, error) {
+	i, err := parseInt(number)
 	if err != nil {
 		return 0, err
 	}
@@ -160,7 +160,7 @@ func (p *CronParser) parseIntInRange(number string, min, max int) (int, error) {
 	return i, nil
 }
 
-func (p *CronParser) parseInt(number string) (int, error) {
+func parseInt(number string) (int, error) {
 	if strings.TrimSpace(number) == "" {
 		return 0, fmt.Errorf("empty value, expected number")
 	}
