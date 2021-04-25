@@ -23,7 +23,9 @@ func (p *CronPrinter) Print(w io.Writer, cron *Cron) {
 	fmt.Fprintf(w, "%-14s", "day of week")
 	p.printNumbers(w, cron.DayOfWeek)
 
-	fmt.Fprintf(w, "%-14s%s\n", "command", cron.Command)
+	if cron.Command != "" {
+		fmt.Fprintf(w, "%-14s%s\n", "command", cron.Command)
+	}
 }
 
 func (p *CronPrinter) printNumbers(w io.Writer, numbers []int) {

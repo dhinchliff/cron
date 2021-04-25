@@ -123,13 +123,23 @@ func TestCronParser_Parse(t *testing.T) {
 				Command:    "/usr/bin/find file",
 			},
 		},
+		"expression without command": {
+			expression: "1 2 3 4 5 ",
+			cron: &Cron{
+				Minute:     []int{1},
+				Hour:       []int{2},
+				DayOfMonth: []int{3},
+				Month:      []int{4},
+				DayOfWeek:  []int{5},
+			},
+		},
 		"expression with value out of range": {
 			expression: "1 2 3 4 100 /usr/bin/find",
 			err:        fmt.Errorf("unexpected value 100, expected value between 0 and 6"),
 		},
 		"expression with missing fields": {
 			expression: "1 2 3 4 /usr/bin/find",
-			err:        fmt.Errorf("invalid expression [1 2 3 4 /usr/bin/find]"),
+			err:        fmt.Errorf("invalid value /usr/bin/find, expected number"),
 		},
 		"expression with invalid numbers": {
 			expression: "1 2 3 4 a /usr/bin/find",

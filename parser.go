@@ -13,7 +13,7 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 	expression = strings.TrimSpace(expression)
 	fields := strings.Split(expression, " ")
 
-	if len(fields) < 6 {
+	if len(fields) < 5 {
 		return nil, fmt.Errorf("invalid expression [%s]", expression)
 	}
 

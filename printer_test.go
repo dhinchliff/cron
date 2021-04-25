@@ -31,6 +31,23 @@ func TestCronPrinter_Print(t *testing.T) {
 				"command       /usr/bin/find",
 			},
 		},
+		"cron without command": {
+			cron: &Cron{
+				Minute:     []int{1},
+				Hour:       []int{1},
+				DayOfMonth: []int{1},
+				Month:      []int{1},
+				DayOfWeek:  []int{1},
+				Command:    "",
+			},
+			out: []string{
+				"minute        1 ",
+				"hour          1 ",
+				"day of month  1 ",
+				"month         1 ",
+				"day of week   1 ",
+			},
+		},
 	}
 	for name, tc := range tests {
 		t.Run(name, func(t *testing.T) {
