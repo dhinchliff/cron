@@ -53,10 +53,6 @@ func (p *CronParser) Parse(expression string) (*Cron, error) {
 }
 
 func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
-	if field == "*" {
-		return numRange(min, max), nil
-	}
-
 	var out []int
 	outMap := make(map[int]struct{})
 	expressions := strings.Split(field, ",")
