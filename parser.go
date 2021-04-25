@@ -131,10 +131,11 @@ func (p *CronParser) getRangeStep(start int, end int, step int, min int, max int
 			outMap[i] = struct{}{}
 		}
 	} else {
-		for i := start; i <= max; i += step {
+		var i int
+		for i = start; i <= max; i += step {
 			outMap[i] = struct{}{}
 		}
-		for i := min; i <= end; i += step {
+		for i = i - max - 1; i <= end; i += step {
 			outMap[i] = struct{}{}
 		}
 	}
