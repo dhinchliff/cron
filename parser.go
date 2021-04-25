@@ -79,77 +79,64 @@ func (p *CronParser) parseField(field string, min int, max int) ([]int, error) {
 	return out, nil
 }
 
-func (p *CronParser) parseExpression(expression string, min int, max int, outMap map[int]struct{}) error {
-	if rangeParts := strings.Split(expression, "-"); len(rangeParts) == 2 {
-		err := p.getRange(rangeParts[0], rangeParts[1], min, max, outMap)
+func (p *CronParser) parseExpression(expression string, min int, max int, outMap map[int]struct{}) (err error) {
+	rangeAndStep := strings.Split(expression, "/")
+	startAndEnd := strings.Split(rangeAndStep[0], "-")
+	start := min
+	end := max
+	step := 1
+
+	if len(rangeAndStep) > 2 {
+		return fmt.Errorf("too many slashes")
+	}
+
+	if len(rangeAndStep) == 2 {
+		step, err = p.parseInt(rangeAndStep[1])
 		if err != nil {
 			return err
 		}
-	} else if stepParts := strings.Split(expression, "/"); len(stepParts) == 2 {
-		err := p.getSteps(stepParts[0], stepParts[1], min, max, outMap)
-		if err != nil {
-			return err
-		}
-	} else {
-		i, err := p.parseIntInRange(expression, min, max)
+	}
+
+	if rangeAndStep[0] != "*" && rangeAndStep[0] != "" {
+		start, err = p.parseIntInRange(startAndEnd[0], min, max)
 		if err != nil {
 			return err
 		}
 
-		outMap[i] = struct{}{}
+		if len(startAndEnd) == 2 {
+			end, err = p.parseIntInRange(startAndEnd[1], min, max)
+			if err != nil {
+				return err
+			}
+		} else {
+			end = start
+		}
+	}
+
+	err = p.getRangeStep(start, end, step, min, max, outMap)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (p *CronParser) getRange(startString string, endString string, min int, max int, outMap map[int]struct{}) error {
-	start, err := p.parseIntInRange(startString, min, max)
-	if err != nil {
-		return err
-	}
-
-	end, err := p.parseIntInRange(endString, min, max)
-	if err != nil {
-		return err
-	}
-
-	if start <= end {
-		for _, i := range numRange(start, end) {
-			outMap[i] = struct{}{}
-		}
-	} else {
-		for _, i := range numRange(min, end) {
-			outMap[i] = struct{}{}
-		}
-		for _, i := range numRange(start, max) {
-			outMap[i] = struct{}{}
-		}
-	}
-
-	return nil
-}
-
-func (p *CronParser) getSteps(startString string, stepString string, min int, max int, outMap map[int]struct{}) error {
-	i := min
-
-	step, err := p.parseInt(stepString)
-	if err != nil {
-		return err
-	}
-
+func (p *CronParser) getRangeStep(start int, end int, step int, min int, max int, outMap map[int]struct{}) error {
 	if step < 1 {
 		return fmt.Errorf("unexpected step %d, expected value greater than zero", step)
 	}
 
-	if startString != "*" && startString != "" {
-		i, err = p.parseIntInRange(startString, min, max)
-		if err != nil {
-			return err
+	if start <= end {
+		for i := start; i <= end; i += step {
+			outMap[i] = struct{}{}
 		}
-	}
-
-	for ; i <= max; i += step {
-		outMap[i] = struct{}{}
+	} else {
+		for i := start; i <= max; i += step {
+			outMap[i] = struct{}{}
+		}
+		for i := min; i <= end; i += step {
+			outMap[i] = struct{}{}
+		}
 	}
 
 	return nil
